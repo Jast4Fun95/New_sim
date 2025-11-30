@@ -839,21 +839,31 @@ function hard_checkAnswer(){
   if(!hard_currentAnswers || hard_currentAnswers.length===0) return;
   const chosen = Array.from(document.querySelectorAll('.hardChk:checked')).map(x=>parseInt(x.value,10));
   let ok = true;
+
   hard_currentAnswers.forEach((ans, idx)=>{
     const checked = chosen.includes(idx);
     if(ans.c && !checked) ok = false;
     if(!ans.c && checked) ok = false;
   });
-  hard_total++;
-  if(ok) hard_score++; else document.querySelector('#hardMode .card').classList.add('incorrect');
 
-  // highlight correct answers
+  hard_total++;
+  if(ok) {
+    hard_score++;
+  } else {
+    const box = document.getElementById('hardMode');
+    box.classList.add('incorrect');
+    setTimeout(()=>box.classList.remove('incorrect'),700);
+  }
+
+  // bold answers
   document.querySelectorAll('.hardChk').forEach((chk, idx)=>{
     if(hard_currentAnswers[idx].c) chk.parentElement.classList.add('correct-answer');
   });
 
-  document.getElementById('hard_score').innerText = `Scor curent: ${hard_score} / ${hard_total}`;
+  document.getElementById('hard_score').innerText =
+    `Scor curent: ${hard_score} / ${hard_total}`;
 }
+
 
 function hard_stop(){
   document.getElementById('hard_score').innerHTML = `<b>Scor final: ${hard_score} / ${hard_total}</b>`;
@@ -1028,8 +1038,13 @@ function match_checkAnswer(){
   chosenComp.forEach(c=>{ if(!match_current.compatible.includes(c)) isCorrect=false; });
 
   match_total++;
-  if(isCorrect) match_score++; else document.querySelector('#matchMode .card').classList.add('incorrect');
-
+  if(isCorrect) {
+    match_score++;
+  } else { 
+    const box = document.getElementById('matchMode');
+    box.classList.add('incorrect');
+    setTimeout(()=>box.classList.remove('incorrect'),700);
+  }
   // highlight corrects
   // name
   const nameSel = document.getElementById('match_pickName');
